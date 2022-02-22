@@ -1,6 +1,7 @@
 package com.example.paintit
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
@@ -59,16 +60,26 @@ class PaintView : View {
                 path.moveTo(x, y)
                 return true
             }
-        MotionEvent.ACTION_MOVE -> {
-            path.lineTo(x, y)
-            pathList.add(path)
-            colorList.add(currentBrush)
+            MotionEvent.ACTION_MOVE -> {
+                path.lineTo(x, y)
+                pathList.add(path)
+                colorList.add(currentBrush)
+            }
+            else -> return false
         }
-        else -> return false
-    }
-    postInvalidate()
+        postInvalidate()
         return false;
-}
+    }
 
+    override fun onDraw(canvas: Canvas) {
+
+        for (i in pathList.indices) {
+            paintBrush.setColor(colorList[i])
+            canvas.drawPath(pathList[i], paintBrush)
+            invalidate()
+        }
+
+
+    }
 
 }
